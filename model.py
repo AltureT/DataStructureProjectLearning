@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-class User():
-    def __init__(self, name, email, tel):
+class User:
+    def __init__(self, name='Bob', email='Bob@example.com', tel='123456789'):
         self._name = name
         self._email = email
         self._tel = tel
@@ -17,13 +17,13 @@ class User():
         return self._tel
 
 
-class LinkNode():
+class LinkNode:
     def __init__(self, val: User):
         self.val = val
         self.next = None
 
 
-class TreeNode():
+class TreeNode:
     def __init__(self, val: User):
         self.val = val
         self.left = None

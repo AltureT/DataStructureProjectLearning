@@ -2,13 +2,16 @@
 
 from tkinter import *
 from tkinter import ttk
+import control
+import global_val
 
 
-class App():
+class App:
     def __init__(self, windowName):
         self.windowName = windowName
+        global_val.init()
 
-    def createWidgets(self):
+    def create_widgets(self):
         self.windowName.title('通讯录')
         self.windowName.geometry('630x430')
 
@@ -28,13 +31,15 @@ class App():
 
     def create_search_frame(self, searchtabframe):
         namelabel = Label(searchtabframe, text='姓名:')
-        name = StringVar()
-        nameentry = Entry(searchtabframe, textvariable=name)
+        nameentry = Entry(searchtabframe)
 
-        searchbutton1 = Button(searchtabframe, text='查询（数组）')
-        searchbutton2 = Button(searchtabframe, text='查询（链表）')
-        searchbutton3 = Button(searchtabframe, text='查询（二叉树）')
-
+        searchbutton1 = Button(searchtabframe, text='查询（数组）',
+                               command=lambda: control.Search(nameentry.get()).from_array())
+        searchbutton2 = Button(searchtabframe, text='查询（链表）',
+                               command=lambda: control.Search(nameentry.get()).from_link())
+        searchbutton3 = Button(searchtabframe, text='查询（二叉树）',
+                               command=lambda: control.Search(nameentry.get()).from_tree())
+        print(searchbutton1)
         namelabel.grid(row=0, column=0, padx=10, pady=5, ipady=10)
         nameentry.grid(row=0, column=1, padx=10, pady=10, ipady=10)
         searchbutton1.grid(row=1, column=0, padx=10, pady=5, ipady=10)
@@ -42,9 +47,14 @@ class App():
         searchbutton3.grid(row=3, column=0, padx=10, pady=5, ipady=10)
 
         result = StringVar()
-        resultentry = Entry(searchtabframe, textvariable=result)
-        resultentry['state'] = 'readonly'
-        resultentry.grid(row=1, column=1, rowspan=3, padx=10, pady=5, ipady=40)
+        result = global_val.get_user_info().get_user_name() + \
+                 global_val.get_user_info().get_user_email() + \
+                 global_val.get_user_info().get_user_tel()
+        resultentry = Text(searchtabframe)
+        resultentry['state'] = 'disabled'
+        resultentry['width'] = 25
+        resultentry['height'] = 10
+        resultentry.grid(row=1, column=1, rowspan=3,columnspan=1)
 
     def create_add_frame(self, addtabframe):
         namelabel = Label(addtabframe, text='姓名:')
@@ -73,10 +83,11 @@ class App():
         addbutton2.grid(row=4, column=0, padx=10, pady=5, ipady=10)
         addbutton3.grid(row=5, column=0, padx=10, pady=5, ipady=10)
 
-        result = StringVar()
-        resultentry = Entry(addtabframe, textvariable=result)
-        resultentry['state'] = 'readonly'
-        resultentry.grid(row=3, column=1, rowspan=3, padx=10, pady=5, ipady=40)
+        resultentry = Text(addtabframe)
+        resultentry['state'] = 'disabled'
+        resultentry['width'] = 25
+        resultentry['height'] = 10
+        resultentry.grid(row=3, column=1, rowspan=3, columnspan=1)
 
     def log_system(self):
         namelabel = Label(self.windowName, text='操作日志')
@@ -90,7 +101,7 @@ class App():
 def main_app():
     window = Tk()
     app = App(window)
-    app.createWidgets()
+    app.create_widgets()
     window.mainloop()
 
 
