@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 def array_find(name):
-    pass
+
+    return
 
 def link_find(name):
     pass

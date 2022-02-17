@@ -2,6 +2,8 @@
 import model
 
 
+
+
 def _init():
     global _global_user_array
     global _global_user_link
