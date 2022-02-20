@@ -10,9 +10,10 @@ def _init():
     global _global_user_obj
 
     testuser = model.User(name='Bob', email='Bob@example.com', tel='123456789')
+    testuser2 = model.User(name='Bob2', email='Bob2@example.com', tel='123456789')
 
     _global_user_obj = testuser
-    _global_user_array = [testuser]
+    _global_user_array = [testuser, testuser2]
     _global_user_link = model.LinkNode(testuser)
     _global_user_tree = model.TreeNode(testuser)
 
