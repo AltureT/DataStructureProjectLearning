@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import time
 from tkinter import *
 from tkinter import ttk
 
@@ -116,7 +116,7 @@ class App:
         :return:
         """
         result = ''
-        self.sresult.delete(1.0, 'end')
+
         if code1 == 0:
             name = info[0]
             if code2 == 0:
@@ -127,28 +127,46 @@ class App:
                 result = self.from_tree(name)
 
             if result:
+                self.sresult.delete(1.0, 'end')
                 self.sresult.insert(1.0, result)
             else:
+                self.sresult.delete(1.0, 'end')
                 self.sresult.insert(1.0, '用户不存在')
         else:
             name = info[0]
             email = info[1]
             tel = info[2]
+
+            if not solution.check_email(email):
+                self.aresult.delete(1.0, 'end')
+                self.aresult.insert(1.0, '邮箱格式不正确，请重新输入')
+                return
+            if not solution.check_tel(tel):
+                self.aresult.delete(1.0, 'end')
+                self.aresult.insert(1.0, '手机号格式不正确，请重新输入')
+                return
+
             if code2 == 0:
-                self.add_to_array(name, email, tel)
+                result = self.add_to_array(name, email, tel)
             elif code2 == 1:
-                self.add_to_link(name, email, tel)
+                result = self.add_to_link(name, email, tel)
             else:
-                self.add_to_tree(name, email, tel)
+                result = self.add_to_tree(name, email, tel)
+            if result:
+                self.aresult.delete(1.0, 'end')
+                self.aresult.insert(1.0, '新增成功')
+            else:
+                self.aresult.delete(1.0, 'end')
+                self.aresult.insert(1.0, '添加失败')
         return
 
-    def update_to_global(self, u: model.User):
-        """
-        将数据更新到全局变量
-        :param u: 待新增用户
-        :return:
-        """
-        global_val.set_user_info(u)
+    # def update_to_global(self, u: model.User):
+    #     """
+    #     将数据更新到全局变量
+    #     :param u: 待新增用户
+    #     :return:
+    #     """
+    #     global_val.set_user_info(u)
 
     def from_array(self, name) -> str:
         result = solution.array_find(global_val.get_user_array(), name)
@@ -179,16 +197,19 @@ class App:
 
     def add_to_array(self, name, email, tel):
         u = model.User(name, email, tel)
-        self.update_to_global(u)
-        return
+        # self.update_to_global(u)
+        array = global_val.get_user_array()
+        newarray = solution.array_add(array, u)
+        global_val.set_user_array(newarray)
+        return True
 
     def add_to_link(self, name, email, tel):
         pos = 3
-        return pos
+        return False
 
     def add_to_tree(self, name, email, tel):
         pos = 3
-        return pos
+        return False
 
 
 def main_app():

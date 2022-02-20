@@ -27,68 +27,68 @@ def init():
 def get_user_info():
     try:
         return _global_user_obj
-    except:
-        print('global未初始化')
+    except NameError as e:
+        print(e, 'global未初始化')
 
 
 def get_user_array():
     try:
         return _global_user_array
-    except:
-        print('global未初始化')
+    except NameError as e:
+        print(e, 'global未初始化')
 
 
 def get_user_link():
     try:
         return _global_user_link
-    except:
-        print('global未初始化')
+    except NameError as e:
+        print(e, 'global未初始化')
 
 
 def get_user_tree():
     try:
         return _global_user_tree
-    except:
-        print('global未初始化')
+    except NameError as e:
+        print(e, 'global未初始化')
 
 
 def get_log_queue():
     try:
         return _global_log_queue
-    except:
-        print('global未初始化')
+    except NameError as e:
+        print(e, 'global未初始化')
 
 
 def set_user_info(obj):
     try:
         _global_user_obj = obj
-    except:
-        print('global未初始化')
+    except NameError as e:
+        print(e, 'global未初始化')
 
 
-def set_user_array():
+def set_user_array(array):
     try:
-        return _global_user_array
-    except:
-        print('global未初始化')
+        _global_user_array = array
+    except NameError as e:
+        print(e, 'global未初始化')
 
 
-def set_user_link():
+def set_user_link(link):
     try:
-        return _global_user_link
-    except:
-        print('global未初始化')
+        _global_user_link = link
+    except NameError as e:
+        print(e, 'global未初始化')
 
 
-def set_user_tree():
+def set_user_tree(tree):
     try:
-        return _global_user_tree
-    except:
-        print('global未初始化')
+        _global_user_tree = tree
+    except NameError as e:
+        print(e, 'global未初始化')
 
 
-def set_log_queue():
+def set_log_queue(list):
     try:
-        return _global_log_queue
-    except:
-        print('global未初始化')
+        _global_log_queue = list
+    except NameError as e:
+        print(e, 'global未初始化')

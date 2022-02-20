@@ -26,8 +26,9 @@ def tree_find(root: TreeNode, name):
     pass
 
 
-def array_add(name, email, tel):
-    pass
+def array_add(data: list, u: model.User) -> list:
+    data.append(u)
+    return data
 
 
 def link_add(name, email, tel):
@@ -36,3 +37,20 @@ def link_add(name, email, tel):
 
 def tree_add(name, email, tel):
     pass
+
+
+def check_email(email) -> bool:
+    return True
+
+
+def check_tel(tel) -> bool:
+    if len(tel) != 11:
+        return False
+    elif tel[0] != "1":
+        return False
+    elif tel[1:2] != "3" and tel[1:3] != "5" and tel[1:3] != "7" and tel[1:3] != "8":
+        return False
+    for i in range(2, 11):
+        if tel[i] < "0" or tel[i] > "9":
+            return False
+    return True

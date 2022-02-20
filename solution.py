@@ -10,7 +10,7 @@ def array_find(data: list, name: str) -> list:
     :param name: 需要查询的姓名
     :return: 返回列表[姓名:str，邮箱:str，联系方式:str]
     '''
-    
+
     return []
 
 
@@ -31,4 +31,12 @@ def link_add(name, email, tel):
 
 
 def tree_add(name, email, tel):
+    pass
+
+
+def check_email(email) -> bool:
+    pass
+
+
+def check_tel(tel) -> bool:
     pass
