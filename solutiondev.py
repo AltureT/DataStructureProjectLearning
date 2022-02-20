@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import global_val
+import re
+
 import model
 from model import *
-import re
 
 
 def array_find(data: list, name: str) -> model.User:
@@ -41,8 +41,8 @@ def tree_add(root: model.TreeNode, u: model.User):
 
 
 def check_email(email) -> bool:
-    if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", email) is not None:
-        # if re.match("/^\w+@[a-z0-9]+\.[a-z]{2,4}$/", email) != None:
+    if re.match(r'^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}$',
+                email) is not None:
         return True
     return False
 
