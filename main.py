@@ -160,13 +160,6 @@ class App:
                 self.aresult.insert(1.0, '添加失败')
         return
 
-    # def update_to_global(self, u: model.User):
-    #     """
-    #     将数据更新到全局变量
-    #     :param u: 待新增用户
-    #     :return:
-    #     """
-    #     global_val.set_user_info(u)
 
     def from_array(self, name) -> str:
         result = solution.array_find(global_val.get_user_array(), name)
@@ -197,19 +190,24 @@ class App:
 
     def add_to_array(self, name, email, tel):
         u = model.User(name, email, tel)
-        # self.update_to_global(u)
         array = global_val.get_user_array()
         newarray = solution.array_add(array, u)
         global_val.set_user_array(newarray)
         return True
 
     def add_to_link(self, name, email, tel):
-        pos = 3
-        return False
+        u = model.User(name, email, tel)
+        link = global_val.get_user_link()
+        newlink = solution.link_add(link, u)
+        global_val.set_user_link(newlink)
+        return True
 
     def add_to_tree(self, name, email, tel):
-        pos = 3
-        return False
+        u = model.User(name, email, tel)
+        tree = global_val.get_user_tree()
+        newtree = solution.tree_add(tree, u)
+        global_val.set_user_array(newtree)
+        return True
 
 
 def main_app():
