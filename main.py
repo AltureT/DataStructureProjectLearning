@@ -198,8 +198,7 @@ class App:
     def add_to_array(self, name, email, tel):
         if self.check_rule(email, tel):
             u = model.User(name, email, tel)
-            array = global_val.get_user_array()
-            newarray = solution.array_add(array, u)
+            newarray = solution.array_add(global_val.get_user_array(), u)
             global_val.set_user_array(newarray)
 
             self.aresult.delete(1.0, 'end')
@@ -208,9 +207,11 @@ class App:
     def add_to_link(self, name, email, tel):
         if self.check_rule(email, tel):
             u = model.User(name, email, tel)
-            link = global_val.get_user_link()
-            newlink = solution.link_add(link, u)
+            newlink = solution.link_add(global_val.get_user_link(), model.LinkNode(u))
+
+            print(id(newlink), newlink.val.get_user_name())
             global_val.set_user_link(newlink)
+            print(id(global_val.get_user_link()), global_val.get_user_link().val.get_user_name())
 
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '新增成功')
@@ -218,9 +219,8 @@ class App:
     def add_to_tree(self, name, email, tel):
         if self.check_rule(email, tel):
             u = model.User(name, email, tel)
-            tree = global_val.get_user_tree()
-            newtree = solution.tree_add(tree, u)
-            global_val.set_user_array(newtree)
+            newtree = solution.tree_add(global_val.get_user_tree(), model.TreeNode(u))
+            global_val.set_user_tree(newtree)
 
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '新增成功')

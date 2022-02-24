@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from model import *
+import model
 
 
-def array_find(data: list, name: str) -> User:
+def array_find(data: list, name: str) -> model.User:
     """
     目的：从数组形式存储的用户数据中根据用户姓名查找信息，data数组已经根据姓名做升序排序。
     :param data: 数组方式存储的用户:[User(1),User(2),User(3)....]，获取data[0]用户姓名的方式（str类型）：data[0].get_user_name()
@@ -17,7 +17,7 @@ def array_find(data: list, name: str) -> User:
     return None
 
 
-def link_find(root: LinkNode, name):
+def link_find(root: model.LinkNode, name):
     """
     目的：从链表中根据用户姓名查找用户信息,链表已经根据姓名升序
     节点模型：
@@ -37,7 +37,7 @@ def link_find(root: LinkNode, name):
     return None
 
 
-def tree_find(root: TreeNode, name):
+def tree_find(root: model.TreeNode, name):
     """
     目的：从二叉树中根据用户姓名查找用户信息,树已经根据姓名排序，保证左子树姓名小于右子树
     节点模型：
@@ -50,20 +50,65 @@ def tree_find(root: TreeNode, name):
     :param name:待查找对象的姓名
     :return:返回用户对象 User,若不存在返回 None
     """
+    if root is None:
+        return None
 
-    pass
+    if root.val.get_user_name() == name:
+        return root.val
+    elif name < root.val.get_user_name():
+        return tree_find(root.left, name)
+    else:
+        return tree_find(root.right, name)
 
 
-def array_add(data: list, u: User) -> list:
+def array_add(data: list, u: model.User) -> list:
+    """
+    目的：将数据插入到合适的位置，保持以姓名为主要关键字升序
+    :param data:用户数据
+    :param u:待插入的用户对象
+    :return:插入成功返回新的data
+    """
     data.append(u)
+
+    i = len(data) - 2
+    while i >= 0 and u.get_user_name() < data[i].get_user_name():
+        data[i + 1] = data[i]
+        i -= 1
+    data[i + 1] = u
+
     return data
 
 
-def link_add(root: LinkNode, u: User):
-    pass
+def output_link(root):
+    while root:
+        print(root.val.get_user_name())
+        root = root.next
 
 
-def tree_add(root: TreeNode, u: User):
+def link_add(root: model.LinkNode, u: model.LinkNode):
+    head = root
+    cur = head
+    if cur is None:
+        head = u
+        return head
+
+    if cur.val.get_user_name() > u.val.get_user_name():
+        u.next = cur
+        head = u
+        return head
+
+    while cur:
+        if cur.next is None:
+            cur.next = u
+            return head
+        if cur.next.val.get_user_name() > u.val.get_user_name():
+            u.next = cur.next
+            cur.next = u
+            return head
+        cur = cur.next
+
+
+def tree_add(root: model.TreeNode, u: model.TreeNode):
     pass
 
 

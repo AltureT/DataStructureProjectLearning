@@ -11,10 +11,12 @@ def _init():
 
     testuser = model.User(name='Bob', email='Bob@example.com', tel='123456789')
     testuser2 = model.User(name='Bob2', email='Bob2@example.com', tel='123456789')
-
+    node1 = model.LinkNode(testuser)
+    node2 = model.LinkNode(testuser2)
+    node1.next = node2
     _global_user_obj = testuser
     _global_user_array = [testuser, testuser2]
-    _global_user_link = model.LinkNode(testuser)
+    _global_user_link = node1
     _global_user_tree = model.TreeNode(testuser)
 
     _global_log_queue = []
@@ -66,21 +68,21 @@ def set_user_info(obj):
         print(e, 'global未初始化')
 
 
-def set_user_array(array):
+def set_user_array(array: list):
     try:
         _global_user_array = array
     except NameError as e:
         print(e, 'global未初始化')
 
 
-def set_user_link(link):
+def set_user_link(root: model.LinkNode):
     try:
-        _global_user_link = link
+        _global_user_link = root
     except NameError as e:
         print(e, 'global未初始化')
 
 
-def set_user_tree(tree):
+def set_user_tree(tree: model.TreeNode):
     try:
         _global_user_tree = tree
     except NameError as e:
