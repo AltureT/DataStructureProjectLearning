@@ -15,14 +15,24 @@ def _init():
     global _global_user_obj
     testuser = model.User(name='Bob', email='Bob@example.com', tel='123456789')
     testuser2 = model.User(name='Bob2', email='Bob2@example.com', tel='123456789')
+    testuser3 = model.User(name='Bob3', email='Bob2@example.com', tel='123456789')
+    testuser4 = model.User(name='Bob4', email='Bob2@example.com', tel='123456789')
     node1 = model.LinkNode(testuser)
     node2 = model.LinkNode(testuser2)
     node1.next = node2
 
+    t1 = model.TreeNode(testuser)
+    t2 = model.TreeNode(testuser2)
+    t3 = model.TreeNode(testuser3)
+    t4 = model.TreeNode(testuser4)
+    t2.left = t1
+    t2.right = t3
+    t3.right = t4
+
     _global_user_obj = testuser
     _global_user_array = [testuser, testuser2]
     _global_user_link = node1
-    _global_user_tree = model.TreeNode(testuser)
+    _global_user_tree = t2
     _global_log_queue = []
 
 

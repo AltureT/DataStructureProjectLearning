@@ -7,13 +7,16 @@ class User:
         self._email = email
         self._tel = tel
 
-    def get_user_name(self):
+    @property
+    def name(self):
         return self._name
 
-    def get_user_email(self):
+    @property
+    def email(self):
         return self._email
 
-    def get_user_tel(self):
+    @property
+    def tel(self):
         return self._tel
 
 

@@ -119,11 +119,12 @@ class App:
             return False
         return True
 
-    def output(self, result):
+    def output(self, st: str, result: model.User) -> None:
         if result:
-            s = result.get_user_name() + '\n' + \
-                result.get_user_email() + '\n' + \
-                result.get_user_tel() + '\n'
+            s = st + '\n' + \
+                result.name + '\n' + \
+                result.email + '\n' + \
+                result.tel + '\n'
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, s)
         else:
@@ -132,15 +133,15 @@ class App:
 
     def from_array(self, array, name):
         result = solution.array_find(array, name)
-        self.output(result)
+        self.output('从数组结构中找到：', result)
 
     def from_link(self, linkroot, name):
         result = solution.link_find(linkroot, name)
-        self.output(result)
+        self.output('从链表结构中找到：', result)
 
     def from_tree(self, treeroot, name):
         result = solution.tree_find(treeroot, name)
-        self.output(result)
+        self.output('从树结构中找到：', result)
 
     def add_to_array(self, name, email, tel):
         if self.check_rule(email, tel):
@@ -149,7 +150,7 @@ class App:
             global_val.set_user_array(newarray)
 
             self.aresult.delete(1.0, 'end')
-            self.aresult.insert(1.0, '新增成功')
+            self.aresult.insert(1.0, '新增到数组成功')
 
     def add_to_link(self, name, email, tel):
         if self.check_rule(email, tel):
@@ -158,7 +159,7 @@ class App:
             global_val.set_user_link(newlink)
 
             self.aresult.delete(1.0, 'end')
-            self.aresult.insert(1.0, '新增成功')
+            self.aresult.insert(1.0, '新增到链表成功')
 
     def add_to_tree(self, name, email, tel):
         if self.check_rule(email, tel):
@@ -167,7 +168,7 @@ class App:
             global_val.set_user_tree(newtree)
 
             self.aresult.delete(1.0, 'end')
-            self.aresult.insert(1.0, '新增成功')
+            self.aresult.insert(1.0, '新增到树成功')
 
 
 def main_app():
