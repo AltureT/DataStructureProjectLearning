@@ -19,7 +19,7 @@ class App:
         self.aresult = Text()
         self.logresult = Text()
         self.windowName = window
-        global_val.init()
+        global_val._init()
         self.create_widgets()
 
     def create_widgets(self):
@@ -45,11 +45,11 @@ class App:
         self.sresult = Text(searchtabframe)
 
         searchbutton1 = Button(searchtabframe, text='查询（数组）',
-                               command=lambda: self.from_array(nameentry.get()))
+                               command=lambda: self.from_array(global_val.get_user_array(), nameentry.get()))
         searchbutton2 = Button(searchtabframe, text='查询（链表）',
-                               command=lambda: self.from_link(nameentry.get()))
+                               command=lambda: self.from_link(global_val.get_user_link(), nameentry.get()))
         searchbutton3 = Button(searchtabframe, text='查询（二叉树）',
-                               command=lambda: self.from_tree(nameentry.get()))
+                               command=lambda: self.from_tree(global_val.get_user_tree(), nameentry.get()))
         namelabel.grid(row=0, column=0, padx=10, pady=5, ipady=10)
         nameentry.grid(row=0, column=1, padx=10, pady=10, ipady=10)
         searchbutton1.grid(row=1, column=0, padx=10, pady=5, ipady=10)
@@ -76,9 +76,11 @@ class App:
         addbutton1 = Button(addtabframe, text='新增（数组）',
                             command=lambda: self.add_to_array(
                                 nameentry.get(), emailentry.get(), telentry.get()))
+
         addbutton2 = Button(addtabframe, text='新增（链表）',
                             command=lambda: self.add_to_link(
                                 nameentry.get(), emailentry.get(), telentry.get()))
+
         addbutton3 = Button(addtabframe, text='新增（二叉树）',
                             command=lambda: self.add_to_tree(
                                 nameentry.get(), emailentry.get(), telentry.get()))
@@ -106,59 +108,6 @@ class App:
         self.logresult['height'] = 30
         self.logresult.grid(row=1, column=2)
 
-    # def exec_and_output(self, code1: int, code2: int, info: list):
-    #     """
-    #     执行查找/新增，并做输出处理
-    #     :param code1: 0代表查找，1代表新增
-    #     :param code2: 0代表数组，1代表链表，2代表树
-    #     :param info: [name,email,tel]
-    #     :return:
-    #     """
-    #     result = ''
-    #
-    #     if code1 == 0:
-    #         name = info[0]
-    #         if code2 == 0:
-    #             result = self.from_array(name)
-    #         elif code2 == 1:
-    #             result = self.from_link(name)
-    #         else:
-    #             result = self.from_tree(name)
-    #
-    #         if result:
-    #             self.sresult.delete(1.0, 'end')
-    #             self.sresult.insert(1.0, result)
-    #         else:
-    #             self.sresult.delete(1.0, 'end')
-    #             self.sresult.insert(1.0, '用户不存在')
-    #     else:
-    #         name = info[0]
-    #         email = info[1]
-    #         tel = info[2]
-    #
-    #         if not solution.check_email(email):
-    #             self.aresult.delete(1.0, 'end')
-    #             self.aresult.insert(1.0, '邮箱格式不正确，请重新输入')
-    #             return
-    #         if not solution.check_tel(tel):
-    #             self.aresult.delete(1.0, 'end')
-    #             self.aresult.insert(1.0, '手机号格式不正确，请重新输入')
-    #             return
-    #
-    #         if code2 == 0:
-    #             result = self.add_to_array(name, email, tel)
-    #         elif code2 == 1:
-    #             result = self.add_to_link(name, email, tel)
-    #         else:
-    #             result = self.add_to_tree(name, email, tel)
-    #         if result:
-    #             self.aresult.delete(1.0, 'end')
-    #             self.aresult.insert(1.0, '新增成功')
-    #         else:
-    #             self.aresult.delete(1.0, 'end')
-    #             self.aresult.insert(1.0, '添加失败')
-    #     return
-
     def check_rule(self, email, tel) -> bool:
         if not solution.check_email(email):
             self.aresult.delete(1.0, 'end')
@@ -171,28 +120,26 @@ class App:
         return True
 
     def output(self, result):
-        print(result)
         if result:
             s = result.get_user_name() + '\n' + \
                 result.get_user_email() + '\n' + \
                 result.get_user_tel() + '\n'
-            print(s)
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, s)
         else:
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, '用户不存在')
 
-    def from_array(self, name):
-        result = solution.array_find(global_val.get_user_array(), name)
+    def from_array(self, array, name):
+        result = solution.array_find(array, name)
         self.output(result)
 
-    def from_link(self, name):
-        result = solution.link_find(global_val.get_user_link(), name)
+    def from_link(self, linkroot, name):
+        result = solution.link_find(linkroot, name)
         self.output(result)
 
-    def from_tree(self, name):
-        result = solution.tree_find(global_val.get_user_tree(), name)
+    def from_tree(self, treeroot, name):
+        result = solution.tree_find(treeroot, name)
         self.output(result)
 
     def add_to_array(self, name, email, tel):
@@ -208,10 +155,7 @@ class App:
         if self.check_rule(email, tel):
             u = model.User(name, email, tel)
             newlink = solution.link_add(global_val.get_user_link(), model.LinkNode(u))
-
-            print(id(newlink), newlink.val.get_user_name())
             global_val.set_user_link(newlink)
-            print(id(global_val.get_user_link()), global_val.get_user_link().val.get_user_name())
 
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '新增成功')

@@ -17,7 +17,7 @@ def array_find(data: list, name: str) -> model.User:
     return None
 
 
-def link_find(root: model.LinkNode, name):
+def link_find(root: model.LinkNode, name) -> model.User:
     """
     目的：从链表中根据用户姓名查找用户信息,链表已经根据姓名升序
     节点模型：
