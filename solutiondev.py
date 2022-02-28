@@ -146,5 +146,9 @@ def check_tel(tel: str) -> bool:
     return True
 
 
-def log_add(queue: list, operat: str, obj: str):
-    pass
+def log_add(queue: list, s: str) -> list:
+    queue.append(s)
+    if len(queue) > 10:
+        queue = queue[1:11]
+    print(queue)
+    return queue

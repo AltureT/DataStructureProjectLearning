@@ -13,6 +13,26 @@ else:
     import global_val as global_val
 
 
+class Decorator:
+    def __init__(self, text='control'):
+        self.text = text
+
+    def __call__(self, func):
+        def wrapper(*args, **kwargs):
+            print(kwargs)
+            name = kwargs
+            s = self.text + name
+            solution.log_add(global_val.get_log_queue(), s)
+
+            self.logresult.delete(1.0, 'end')
+            for i in global_val.get_log_queue():
+                self.logresult.insert(END, i + '\n')
+
+            func(*args, **kwargs)
+
+        return wrapper
+
+
 class App:
     def __init__(self, window):
         self.sresult = Text()
@@ -45,11 +65,11 @@ class App:
         self.sresult = Text(searchtabframe)
 
         searchbutton1 = Button(searchtabframe, text='查询（数组）',
-                               command=lambda: self.from_array(global_val.get_user_array(), nameentry.get()))
+                               command=lambda: self.from_array(nameentry.get()))
         searchbutton2 = Button(searchtabframe, text='查询（链表）',
-                               command=lambda: self.from_link(global_val.get_user_link(), nameentry.get()))
+                               command=lambda: self.from_link(nameentry.get()))
         searchbutton3 = Button(searchtabframe, text='查询（二叉树）',
-                               command=lambda: self.from_tree(global_val.get_user_tree(), nameentry.get()))
+                               command=lambda: self.from_tree(nameentry.get()))
         namelabel.grid(row=0, column=0, padx=10, pady=5, ipady=10)
         nameentry.grid(row=0, column=1, padx=10, pady=10, ipady=10)
         searchbutton1.grid(row=1, column=0, padx=10, pady=5, ipady=10)
@@ -100,6 +120,16 @@ class App:
         self.aresult['height'] = 10
         self.aresult.grid(row=3, column=1, rowspan=3, columnspan=1)
 
+    def report_log(self, opera: str, name: str):
+        s = opera + name
+        solution.log_add(global_val.get_log_queue(), s)
+
+        self.logresult.delete(1.0, 'end')
+        c = 1
+        for i in global_val.get_log_queue():
+            self.logresult.insert(END, str(c) + i + '\n')
+            c += 1
+
     def log_system(self):
         namelabel = Label(self.windowName, text='操作日志')
         namelabel.grid(row=0, column=2)
@@ -129,21 +159,44 @@ class App:
             self.sresult.insert(1.0, s)
         else:
             self.sresult.delete(1.0, 'end')
-            self.sresult.insert(1.0, '用户不存在')
+            self.sresult.insert(1.0, '该数据结构中用户不存在')
 
-    def from_array(self, array, name):
-        result = solution.array_find(array, name)
+    def from_array(self, name):
+        if len(name) == 0:
+            self.sresult.delete(1.0, 'end')
+            self.sresult.insert(1.0, '请输入姓名查找')
+            return
+
+        result = solution.array_find(global_val.get_user_array(), name)
         self.output('从数组结构中找到：', result)
+        self.report_log('从数组中查询：', name)
 
-    def from_link(self, linkroot, name):
-        result = solution.link_find(linkroot, name)
+    def from_link(self, name):
+        if len(name) == 0:
+            self.sresult.delete(1.0, 'end')
+            self.sresult.insert(1.0, '请输入姓名查找')
+            return
+
+        result = solution.link_find(global_val.get_user_link(), name)
         self.output('从链表结构中找到：', result)
+        self.report_log('从链表中查询：', name)
 
-    def from_tree(self, treeroot, name):
-        result = solution.tree_find(treeroot, name)
+    def from_tree(self, name):
+        if len(name) == 0:
+            self.sresult.delete(1.0, 'end')
+            self.sresult.insert(1.0, '请输入姓名查找')
+            return
+
+        result = solution.tree_find(global_val.get_user_tree(), name)
         self.output('从树结构中找到：', result)
+        self.report_log('从树中查询：', name)
 
     def add_to_array(self, name, email, tel):
+        if len(name) == 0:
+            self.aresult.delete(1.0, 'end')
+            self.aresult.insert(1.0, '请输入姓名添加')
+            return
+
         if self.check_rule(email, tel):
             u = model.User(name, email, tel)
             newarray = solution.array_add(global_val.get_user_array(), u)
@@ -151,8 +204,14 @@ class App:
 
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '新增到数组成功')
+            self.report_log('添加该用户到数组：', name)
 
     def add_to_link(self, name, email, tel):
+        if len(name) == 0:
+            self.aresult.delete(1.0, 'end')
+            self.aresult.insert(1.0, '请输入姓名添加')
+            return
+
         if self.check_rule(email, tel):
             u = model.User(name, email, tel)
             newlink = solution.link_add(global_val.get_user_link(), model.LinkNode(u))
@@ -160,8 +219,13 @@ class App:
 
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '新增到链表成功')
+            self.report_log('添加该用户到链表：', name)
 
     def add_to_tree(self, name, email, tel):
+        if len(name) == 0:
+            self.aresult.delete(1.0, 'end')
+            self.aresult.insert(1.0, '请输入姓名添加')
+            return
         if self.check_rule(email, tel):
             u = model.User(name, email, tel)
             newtree = solution.tree_add(global_val.get_user_tree(), model.TreeNode(u))
@@ -169,6 +233,7 @@ class App:
 
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '新增到树成功')
+            self.report_log('添加该用户到树：', name)
 
 
 def main_app():
