@@ -102,9 +102,9 @@ def set_user_tree(root: model.TreeNode):
         print(e, 'global未初始化')
 
 
-def set_log_queue(list):
+def set_log_queue(que):
     global _global_log_queue
     try:
-        _global_log_queue = list
+        _global_log_queue = que
     except NameError as e:
         print(e, 'global未初始化')

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 from tkinter import *
 from tkinter import ttk
 
@@ -6,7 +7,7 @@ import model
 
 config = {'env': 'dev'}
 if config['env'] == 'dev':
-    import solutiondev as solution
+    import solution_dev as solution
     import global_val_dev as global_val
 else:
     import solution as solution
@@ -44,7 +45,7 @@ class App:
 
     def create_widgets(self):
         self.windowName.title('通讯录')
-        self.windowName.geometry('630x430')
+        self.windowName.geometry('730x430')
 
         tabs = ttk.Notebook(self.windowName, width=370, height=360)
         searchtabframe = Frame(tabs)
@@ -122,19 +123,19 @@ class App:
 
     def report_log(self, opera: str, name: str):
         s = opera + name
-        solution.log_add(global_val.get_log_queue(), s)
-
+        t = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        result = solution.log_add(global_val.get_log_queue(), s)
+        result[len(result) - 1] = t + result[len(result) - 1]
+        global_val.set_log_queue(result)
         self.logresult.delete(1.0, 'end')
-        c = 1
         for i in global_val.get_log_queue():
-            self.logresult.insert(END, str(c) + i + '\n')
-            c += 1
+            self.logresult.insert(END, i + '\n')
 
     def log_system(self):
         namelabel = Label(self.windowName, text='操作日志')
         namelabel.grid(row=0, column=2)
         self.logresult = Text(self.windowName)
-        self.logresult['width'] = 25
+        self.logresult['width'] = 40
         self.logresult['height'] = 30
         self.logresult.grid(row=1, column=2)
 

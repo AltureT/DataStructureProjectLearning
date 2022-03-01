@@ -109,6 +109,12 @@ def link_add(root: model.LinkNode, u: model.LinkNode) -> model.LinkNode:
 
 
 def tree_add(root: model.TreeNode, u: model.TreeNode) -> model.TreeNode:
+    """
+    目的：将新用户u，添加到二叉树中合适位置，保证左子树小于右子树
+    :param root: 存储用户数据的树结构的根结点
+    :param u:待新增用户
+    :return:返回新的树结构的根结点
+    """
     cur = root
     if root is None:
         return u
@@ -127,6 +133,11 @@ def tree_add(root: model.TreeNode, u: model.TreeNode) -> model.TreeNode:
 
 
 def check_email(email: str) -> bool:
+    """
+    目的：检验邮箱合法性，邮箱一般包含 @ 符号与顶级域名
+    :param email: 待检验邮箱
+    :return: 邮箱合法返回True，否则返回False
+    """
     if re.match(r'^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}$',
                 email) is not None:
         return True
@@ -134,6 +145,11 @@ def check_email(email: str) -> bool:
 
 
 def check_tel(tel: str) -> bool:
+    """
+    目的：检验手机号合法性，手机号一般1开头，第二位数字一般为3、5、7、8，其余位是数字
+    :param tel: 待检验手机号
+    :return: 手机号合法返回True，否则返回False
+    """
     if len(tel) != 11:
         return False
     elif tel[0] != "1":
