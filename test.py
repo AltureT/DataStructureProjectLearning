@@ -52,6 +52,10 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(solution.array_find(l, 'Jim') is None, '查询数组中不存在的用户失败')
         self.assertTrue(solution.array_find(l, 'Bob') == b, '未正确返回查询用户信息')
 
+        l = [a, b]
+        self.assertTrue(solution.array_find(l, 'Jim') is None, '查询数组中不存在的用户失败')
+        self.assertTrue(solution.array_find(l, 'Bob') == b, '未正确返回查询用户信息')
+
     def test_find_link(self):
         a = model.User('Alice')
         b = model.User('Bob')

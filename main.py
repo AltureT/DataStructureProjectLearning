@@ -167,7 +167,6 @@ class App:
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, '请输入姓名查找')
             return
-
         result = solution.array_find(global_val.get_user_array(), name)
         self.output('从数组结构中找到：', result)
         self.report_log('从数组中查询：', name)

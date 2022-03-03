@@ -6,20 +6,27 @@ import model
 
 def array_find(data: list, name: str) -> model.User:
     """
-    目的：从数组形式存储的用户数据中根据用户姓名查找信息，data数组已经根据姓名做升序排序。
-    :param data: 数组方式存储的用户:[User(1),User(2),User(3)....]，获取data[0]用户姓名的方式（str类型）：data[0].name
+    目的：从data中寻找name的信息，data数组已经根据姓名做升序排序。
+    :param data: 数组方式存储的用户:如[User('Alice'),User('Bob'),User('Tom')....]，
+        获取data[0]用户姓名的方式（str类型）：data[0].name
     :param name: 待查找对象的姓名（str类型）
     :return: 返回找到的用户对象 User,若不存在返回 None
     """
-    for i in data:
-        if i.name == name:
-            return i
+    i, j = 0, len(data) - 1
+    while i <= j:
+        m = (i + j) // 2
+        if data[m].name == name:
+            return data[m]
+        elif data[m].name > name:
+            j -= 1
+        else:
+            i += 1
     return None
 
 
 def link_find(root: model.LinkNode, name: str) -> model.User:
     """
-    目的：从链表中根据用户姓名查找用户信息,链表已经根据姓名升序
+    目的：从root链表中查找name用户信息,链表已经根据姓名升序
     节点模型：
     class LinkNode:
         def __init__(self, val: User):
