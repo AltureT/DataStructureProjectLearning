@@ -140,13 +140,18 @@ class MyTestCase(unittest.TestCase):
         n4 = model.TreeNode(d)
         n5 = model.TreeNode(e)
 
-        self.assertTrue(solution.tree_add(None, n1) == n1)
+        self.assertTrue(solution.tree_add(None, n1) == n1, '当树为空时，返回根结点失败')
 
         n4.left = n2
         n2.left = n1
         n2.right = n3
         n4.right = n5
-        self.assertTrue(solution.tree_add(None, n1) == n1)
+        u = model.User('Bob')
+        n = model.TreeNode(u)
+        r = solution.tree_add(n4, n)
+        self.assertTrue(r == n4, '插入节点后，返回的根结点错误')
+        self.assertTrue(r.left == n2, '插入节点后破坏原来的树结构')
+        self.assertTrue(r.left.left.right == n, '在树中插入节点位置错误')
 
 
 if __name__ == '__main__':
