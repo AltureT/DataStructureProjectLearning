@@ -173,5 +173,4 @@ def log_add(queue: list, s: str) -> list:
     queue.append(s)
     if len(queue) > 10:
         queue = queue[1:11]
-    print(queue)
     return queue
