@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import threading
 import time
 from tkinter import *
 from tkinter import ttk
@@ -162,7 +163,7 @@ class App:
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, '该数据结构中用户不存在')
 
-    def from_array(self, name):
+    def _from_array(self, name):
         if len(name) == 0:
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, '请输入姓名查找')
@@ -171,7 +172,11 @@ class App:
         self.output('从数组结构中找到：', result)
         self.report_log('从数组中查询：', name)
 
-    def from_link(self, name):
+    def from_array(self, name):
+        t = threading.Thread(target=self._from_array(name))
+        t.start()
+
+    def _from_link(self, name):
         if len(name) == 0:
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, '请输入姓名查找')
@@ -181,7 +186,11 @@ class App:
         self.output('从链表结构中找到：', result)
         self.report_log('从链表中查询：', name)
 
-    def from_tree(self, name):
+    def from_link(self, name):
+        t = threading.Thread(target=self._from_link(name))
+        t.start()
+
+    def _from_tree(self, name):
         if len(name) == 0:
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, '请输入姓名查找')
@@ -191,7 +200,11 @@ class App:
         self.output('从树结构中找到：', result)
         self.report_log('从树中查询：', name)
 
-    def add_to_array(self, name, email, tel):
+    def from_tree(self, name):
+        t = threading.Thread(target=self._from_tree(name))
+        t.start()
+
+    def _add_to_array(self, name, email, tel):
         if len(name) == 0:
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '请输入姓名添加')
@@ -206,7 +219,11 @@ class App:
             self.aresult.insert(1.0, '新增到数组成功')
             self.report_log('添加该用户到数组：', name)
 
-    def add_to_link(self, name, email, tel):
+    def add_to_array(self, name, email, tel):
+        t = threading.Thread(target=self._add_to_array(name, email, tel))
+        t.start()
+
+    def _add_to_link(self, name, email, tel):
         if len(name) == 0:
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '请输入姓名添加')
@@ -221,7 +238,11 @@ class App:
             self.aresult.insert(1.0, '新增到链表成功')
             self.report_log('添加该用户到链表：', name)
 
-    def add_to_tree(self, name, email, tel):
+    def add_to_link(self, name, email, tel):
+        t = threading.Thread(target=self._add_to_link(name, email, tel))
+        t.start()
+
+    def _add_to_tree(self, name, email, tel):
         if len(name) == 0:
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '请输入姓名添加')
@@ -234,6 +255,10 @@ class App:
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '新增到树成功')
             self.report_log('添加该用户到树：', name)
+
+    def add_to_tree(self, name, email, tel):
+        t = threading.Thread(target=self._add_to_tree(name, email, tel))
+        t.start()
 
 
 def main_app():
