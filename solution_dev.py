@@ -2,8 +2,11 @@
 import re
 
 import model
+from decorator import runtime, count_info
 
 
+@count_info
+@runtime
 def array_find(data: list, name: str) -> model.User:
     """
     目的：从data中寻找name的信息，data数组已经根据姓名做升序排序。
@@ -18,12 +21,14 @@ def array_find(data: list, name: str) -> model.User:
         if data[m].name == name:
             return data[m]
         elif data[m].name > name:
-            j -= 1
+            j = m - 1
         else:
-            i += 1
+            i = m + 1
     return None
 
 
+@count_info
+@runtime
 def link_find(root: model.LinkNode, name: str) -> model.User:
     """
     目的：从root链表中查找name用户信息,链表已经根据姓名升序
@@ -44,6 +49,7 @@ def link_find(root: model.LinkNode, name: str) -> model.User:
     return None
 
 
+@runtime
 def tree_find(root: model.TreeNode, name: str):
     """
     目的：从二叉树中根据用户姓名查找用户信息,树已经根据姓名排序，保证左子树姓名小于右子树
@@ -68,6 +74,7 @@ def tree_find(root: model.TreeNode, name: str):
         return tree_find(root.right, name)
 
 
+@runtime
 def array_add(data: list, u: model.User) -> list:
     """
     目的：将用户数据u插入到合适的位置，保持以姓名为主要关键字升序
@@ -86,6 +93,7 @@ def array_add(data: list, u: model.User) -> list:
     return data
 
 
+@runtime
 def link_add(root: model.LinkNode, u: model.LinkNode) -> model.LinkNode:
     """
     目的：将u节点插入到链表合适的位置，保持以姓名为主要关键字升序
@@ -115,6 +123,7 @@ def link_add(root: model.LinkNode, u: model.LinkNode) -> model.LinkNode:
         cur = cur.next
 
 
+@runtime
 def tree_add(root: model.TreeNode, u: model.TreeNode) -> model.TreeNode:
     """
     目的：将新用户u，添加到二叉树中合适位置，保证左子树小于右子树
@@ -139,6 +148,7 @@ def tree_add(root: model.TreeNode, u: model.TreeNode) -> model.TreeNode:
     return cur
 
 
+@runtime
 def check_email(email: str) -> bool:
     """
     目的：检验邮箱合法性，邮箱一般包含 @ 符号与顶级域名
@@ -151,6 +161,7 @@ def check_email(email: str) -> bool:
     return False
 
 
+@runtime
 def check_tel(tel: str) -> bool:
     """
     目的：检验手机号合法性，手机号一般1开头，第二位数字一般为3、5、7、8，其余位是数字
@@ -169,6 +180,7 @@ def check_tel(tel: str) -> bool:
     return True
 
 
+@runtime
 def log_add(queue: list, s: str) -> list:
     queue.append(s)
     if len(queue) > 10:

@@ -4,35 +4,19 @@ import time
 from tkinter import *
 from tkinter import ttk
 
+import fake
+import global_val_dev
 import model
 
 config = {'env': 'dev'}
 if config['env'] == 'dev':
     import solution_dev as solution
     import global_val_dev as global_val
+
+
 else:
     import solution as solution
     import global_val as global_val
-
-
-class Decorator:
-    def __init__(self, text='control'):
-        self.text = text
-
-    def __call__(self, func):
-        def wrapper(*args, **kwargs):
-            print(kwargs)
-            name = kwargs
-            s = self.text + name
-            solution.log_add(global_val.get_log_queue(), s)
-
-            self.logresult.delete(1.0, 'end')
-            for i in global_val.get_log_queue():
-                self.logresult.insert(END, i + '\n')
-
-            func(*args, **kwargs)
-
-        return wrapper
 
 
 class App:
@@ -55,10 +39,14 @@ class App:
         addtabframe = Frame(tabs)
         self.create_add_frame(addtabframe)
 
-        self.log_system()
+        createtabframe = Frame(tabs)
+        self.create_create_frame(createtabframe)
+
+        self.create_log_window()
 
         tabs.add(searchtabframe, text='查询')
         tabs.add(addtabframe, text='新增')
+        tabs.add(createtabframe, text='数据生成')
         tabs.grid(row=0, column=0, rowspan=24, columnspan=2)
 
     def create_search_frame(self, searchtabframe):
@@ -122,23 +110,42 @@ class App:
         self.aresult['height'] = 10
         self.aresult.grid(row=3, column=1, rowspan=3, columnspan=1)
 
+    def create_create_frame(self, createtabframe):
+        sizelabel = Label(createtabframe, text='生成数据量:')
+        size = StringVar()
+        sizeentry = Entry(createtabframe, textvariable=size)
+        button = Button(createtabframe, text='数据生成',
+                        command=self.create_data)
+
+        sizelabel.grid(row=0, column=0, padx=10, pady=5, ipady=5)
+        sizeentry.grid(row=0, column=1, padx=10, pady=10, ipady=5)
+        button.grid(row=3, column=1, padx=10, pady=5, ipady=10)
+
     def report_log(self, opera: str, name: str):
-        s = opera + name
+        runtime = global_val_dev.get_runtime()
+        s = opera + name + '\n' + '时间开销:' + runtime + '\n'
+
         t = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         result = solution.log_add(global_val.get_log_queue(), s)
         result[len(result) - 1] = t + result[len(result) - 1]
         global_val.set_log_queue(result)
+
         self.logresult.delete(1.0, 'end')
+
         for i in global_val.get_log_queue():
             self.logresult.insert(END, i + '\n')
 
-    def log_system(self):
+    def create_log_window(self):
         namelabel = Label(self.windowName, text='操作日志')
         namelabel.grid(row=0, column=2)
         self.logresult = Text(self.windowName)
         self.logresult['width'] = 40
         self.logresult['height'] = 30
         self.logresult.grid(row=1, column=2)
+
+    def create_data(self):
+        t = threading.Thread(target=fake.fake_data())
+        t.start()
 
     def check_rule(self, email, tel) -> bool:
         if not solution.check_email(email):
