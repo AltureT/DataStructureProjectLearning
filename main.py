@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
 import threading
 import time
+from collections.abc import Iterable
 from tkinter import *
 from tkinter import ttk
+
+import matplotlib.pyplot as plt
+import networkx as nx
 
 import fake
 import global_val_dev
 import model
 
+plt.rcParams["font.sans-serif"] = ['Arial Unicode MS', 'SimHei']
+plt.rcParams["axes.unicode_minus"] = False
 config = {'env': 'dev'}
 if config['env'] == 'dev':
     import solution_dev as solution
@@ -17,6 +23,41 @@ if config['env'] == 'dev':
 else:
     import solution as solution
     import global_val as global_val
+
+
+class BinaryTree:
+
+    def __init__(self, seq=()):
+        assert isinstance(seq, Iterable)  # 确保输入的参数为可迭代对象
+        self.root = None
+
+
+class Graph:
+    def __init__(self, node):
+        self.node = node
+
+    def create_graph(self, G, node, pos=None, x=0, y=0, layer=1):
+        if pos is None:
+            pos = {}
+        pos[node.val.name] = (x, y)
+        if node.left:
+            G.add_edge(node.val.name, node.left.val.name)
+            l_x, l_y = x - 1 / 2 ** layer, y - 1
+            l_layer = layer + 1
+            self.create_graph(G, node.left, x=l_x, y=l_y, pos=pos, layer=l_layer)
+        if node.right:
+            G.add_edge(node.val.name, node.right.val.name)
+            r_x, r_y = x + 1 / 2 ** layer, y - 1
+            r_layer = layer + 1
+            self.create_graph(G, node.right, x=r_x, y=r_y, pos=pos, layer=r_layer)
+        return (G, pos)
+
+    def draw(self):  # 以某个节点为根画图
+        graph = nx.DiGraph()
+        graph, pos = self.create_graph(graph, self.node)
+        fig, ax = plt.subplots(figsize=(8, 10))  # 比例可以根据树的深度适当调节
+        nx.draw_networkx(graph, pos, ax=ax, node_size=300)
+        plt.show()
 
 
 class App:
@@ -60,11 +101,14 @@ class App:
                                command=lambda: self.from_link(nameentry.get()))
         searchbutton3 = Button(searchtabframe, text='查询（二叉树）',
                                command=lambda: self.from_tree(nameentry.get()))
+        searchbutton4 = Button(searchtabframe, text='打印二叉树）',
+                               command=self.draw_tree)
         namelabel.grid(row=0, column=0, padx=10, pady=5, ipady=10)
         nameentry.grid(row=0, column=1, padx=10, pady=10, ipady=10)
         searchbutton1.grid(row=1, column=0, padx=10, pady=5, ipady=10)
         searchbutton2.grid(row=2, column=0, padx=10, pady=5, ipady=10)
         searchbutton3.grid(row=3, column=0, padx=10, pady=5, ipady=10)
+        searchbutton4.grid(row=4, column=0, padx=10, pady=5, ipady=10)
 
         self.sresult['width'] = 25
         self.sresult['height'] = 10
@@ -120,6 +164,10 @@ class App:
         sizelabel.grid(row=0, column=0, padx=10, pady=5, ipady=5)
         sizeentry.grid(row=0, column=1, padx=10, pady=10, ipady=5)
         button.grid(row=3, column=1, padx=10, pady=5, ipady=10)
+
+    def draw_tree(self):
+        graph = Graph(global_val.get_user_tree())
+        graph.draw()
 
     def report_log(self, opera: str, name: str):
         runtime = global_val_dev.get_runtime()
