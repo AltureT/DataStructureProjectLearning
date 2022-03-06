@@ -1,4 +1,0 @@
-Faker==8.8.1
-matplotlib==3.5.1
-networkx==2.6.3
-psutil==5.8.0
