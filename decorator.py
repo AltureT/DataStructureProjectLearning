@@ -6,7 +6,7 @@ from time import time
 
 import psutil
 
-import global_val_dev
+import global_val
 
 lock = threading.Lock()
 
@@ -18,12 +18,9 @@ def runtime(func):
         result = func(*args, **kwargs)
         end = time()
 
-        # global_val_dev.set_runtime(format(end - start, '.8f'))
         lock.acquire()
         try:
-
-            global_val_dev.set_runtime(format(end - start, '.8f'))
-
+            global_val.set_runtime(format(end - start, '.8f'))
         finally:
             lock.release()
 

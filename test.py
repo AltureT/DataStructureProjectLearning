@@ -1,8 +1,13 @@
 import unittest
 
-import global_val_dev as global_val
+import global_val
 import model
-import solution_dev as solution
+from main import config
+
+if config['env'] == 'dev':
+    import solution_dev as solution
+else:
+    import solution
 
 
 class MyTestCase(unittest.TestCase):

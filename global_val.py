@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 import model
 
+_global_user_array = []
+_global_user_link = None
+_global_user_tree = None
+_global_log_queue = []
+_global_runtime = ''
+
 
 def _init():
     global _global_user_array
@@ -8,24 +14,23 @@ def _init():
     global _global_user_tree
     global _global_log_queue
     global _global_user_obj
+    global _global_runtime
 
-    testuser = model.User(name='Bob', email='Bob@example.com', tel='123456789')
-
-    _global_user_obj = testuser
-    _global_user_array = [testuser]
-    _global_user_link = model.LinkNode(testuser)
-    _global_user_tree = model.TreeNode(testuser)
-
+    _global_user_obj = None
+    _global_user_array = []
+    _global_user_link = None
+    _global_user_tree = None
     _global_log_queue = []
+    _global_runtime = ''
 
 
 def init():
     _init()
+    
 
-
-def get_user_info():
+def get_runtime():
     try:
-        return _global_user_obj
+        return _global_runtime
     except NameError as e:
         print(e, 'global未初始化')
 
@@ -58,36 +63,41 @@ def get_log_queue():
         print(e, 'global未初始化')
 
 
-def set_user_info(obj):
-    try:
-        _global_user_obj = obj
-    except NameError as e:
-        print(e, 'global未初始化')
-
-
-def set_user_array(array):
+def set_user_array(array: list):
+    global _global_user_array
     try:
         _global_user_array = array
     except NameError as e:
         print(e, 'global未初始化')
 
 
-def set_user_link(link):
+def set_user_link(root: model.LinkNode):
+    global _global_user_link
     try:
-        _global_user_link = link
+        _global_user_link = root
     except NameError as e:
         print(e, 'global未初始化')
 
 
-def set_user_tree(tree):
+def set_user_tree(root: model.TreeNode):
+    global _global_user_tree
     try:
-        _global_user_tree = tree
+        _global_user_tree = root
     except NameError as e:
         print(e, 'global未初始化')
 
 
-def set_log_queue(list):
+def set_log_queue(que):
+    global _global_log_queue
     try:
-        _global_log_queue = list
+        _global_log_queue = que
+    except NameError as e:
+        print(e, 'global未初始化')
+
+
+def set_runtime(time: str):
+    global _global_runtime
+    try:
+        _global_runtime = time
     except NameError as e:
         print(e, 'global未初始化')

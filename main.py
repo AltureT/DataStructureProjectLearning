@@ -9,20 +9,18 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 import fake
-import global_val_dev
+import global_val
 import model
+
+config = {'env': 'dev'}
 
 plt.rcParams["font.sans-serif"] = ['Arial Unicode MS', 'SimHei']
 plt.rcParams["axes.unicode_minus"] = False
-config = {'env': 'dev'}
+
 if config['env'] == 'dev':
     import solution_dev as solution
-    import global_val_dev as global_val
-
-
 else:
     import solution as solution
-    import global_val as global_val
 
 
 class BinaryTree:
@@ -33,10 +31,9 @@ class BinaryTree:
 
 
 class Graph:
-    def __init__(self, node):
-        self.node = node
-
     def create_graph(self, G, node, pos=None, x=0, y=0, layer=1):
+        if node is None:
+            return
         if pos is None:
             pos = {}
         pos[node.val.name] = (x, y)
@@ -52,12 +49,33 @@ class Graph:
             self.create_graph(G, node.right, x=r_x, y=r_y, pos=pos, layer=r_layer)
         return (G, pos)
 
-    def draw(self):  # 以某个节点为根画图
+    def _draw(self, node):  # 以某个节点为根画图
+        print('绘制图中·······')
+        if node is None:
+            print('节点不存在·······')
+            return
         graph = nx.DiGraph()
-        graph, pos = self.create_graph(graph, self.node)
+        graph, pos = self.create_graph(graph, node)
         fig, ax = plt.subplots(figsize=(8, 10))  # 比例可以根据树的深度适当调节
         nx.draw_networkx(graph, pos, ax=ax, node_size=300)
         plt.show()
+        print('绘制完成')
+
+    def draw(self):  # 以某个节点为根画图
+        t = threading.Thread(target=lambda: self._draw(global_val.get_user_tree()))
+        t.start()
+
+
+class Control:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def generate_data(s):
+        s = s if len(s) > 0 else '0'
+        n = int(s)
+        t = threading.Thread(target=lambda: fake.fake_data(n))
+        t.start()
 
 
 class App:
@@ -66,7 +84,7 @@ class App:
         self.aresult = Text()
         self.logresult = Text()
         self.windowName = window
-        global_val._init()
+        global_val.init()
         self.create_widgets()
 
     def create_widgets(self):
@@ -158,19 +176,37 @@ class App:
         sizelabel = Label(createtabframe, text='生成数据量:')
         size = StringVar()
         sizeentry = Entry(createtabframe, textvariable=size)
-        button = Button(createtabframe, text='数据生成',
-                        command=self.create_data)
+        button1 = Button(createtabframe, text='数据生成',
+                         command=lambda: self.create_data(sizeentry.get()))
+
+        button2 = Button(createtabframe, text='数据重置',
+                         command=self.initial_data)
 
         sizelabel.grid(row=0, column=0, padx=10, pady=5, ipady=5)
         sizeentry.grid(row=0, column=1, padx=10, pady=10, ipady=5)
-        button.grid(row=3, column=1, padx=10, pady=5, ipady=10)
+        button1.grid(row=3, column=1, padx=10, pady=5, ipady=10)
+        button2.grid(row=4, column=1, padx=10, pady=5, ipady=10)
+
+    def create_log_window(self):
+        namelabel = Label(self.windowName, text='操作日志')
+        namelabel.grid(row=0, column=2)
+        self.logresult = Text(self.windowName)
+        self.logresult['width'] = 40
+        self.logresult['height'] = 30
+        self.logresult.grid(row=1, column=2)
 
     def draw_tree(self):
-        graph = Graph(global_val.get_user_tree())
-        graph.draw()
+        t = threading.Thread(target=Graph().draw())
+        t.start()
+        # graph = Graph(global_val.get_user_tree())
+        # graph.draw()
+
+    def initial_data(self):
+        self.logresult.delete(1.0, 'end')
+        global_val.init()
 
     def report_log(self, opera: str, name: str):
-        runtime = global_val_dev.get_runtime()
+        runtime = global_val.get_runtime()
         s = opera + name + '\n' + '时间开销:' + runtime + '\n'
 
         t = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -183,16 +219,8 @@ class App:
         for i in global_val.get_log_queue():
             self.logresult.insert(END, i + '\n')
 
-    def create_log_window(self):
-        namelabel = Label(self.windowName, text='操作日志')
-        namelabel.grid(row=0, column=2)
-        self.logresult = Text(self.windowName)
-        self.logresult['width'] = 40
-        self.logresult['height'] = 30
-        self.logresult.grid(row=1, column=2)
-
-    def create_data(self):
-        t = threading.Thread(target=fake.fake_data())
+    def create_data(self, n):
+        t = threading.Thread(target=Control.generate_data(n))
         t.start()
 
     def check_rule(self, email, tel) -> bool:
@@ -218,7 +246,7 @@ class App:
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, '该数据结构中用户不存在')
 
-    def _from_array(self, name):
+    def from_array(self, name):
         if len(name) == 0:
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, '请输入姓名查找')
@@ -227,39 +255,25 @@ class App:
         self.output('从数组结构中找到：', result)
         self.report_log('从数组中查询：', name)
 
-    def from_array(self, name):
-        t = threading.Thread(target=self._from_array(name))
-        t.start()
-
-    def _from_link(self, name):
+    def from_link(self, name):
         if len(name) == 0:
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, '请输入姓名查找')
             return
-
         result = solution.link_find(global_val.get_user_link(), name)
         self.output('从链表结构中找到：', result)
         self.report_log('从链表中查询：', name)
 
-    def from_link(self, name):
-        t = threading.Thread(target=self._from_link(name))
-        t.start()
-
-    def _from_tree(self, name):
+    def from_tree(self, name):
         if len(name) == 0:
             self.sresult.delete(1.0, 'end')
             self.sresult.insert(1.0, '请输入姓名查找')
             return
-
         result = solution.tree_find(global_val.get_user_tree(), name)
         self.output('从树结构中找到：', result)
         self.report_log('从树中查询：', name)
 
-    def from_tree(self, name):
-        t = threading.Thread(target=self._from_tree(name))
-        t.start()
-
-    def _add_to_array(self, name, email, tel):
+    def add_to_array(self, name, email, tel):
         if len(name) == 0:
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '请输入姓名添加')
@@ -274,11 +288,7 @@ class App:
             self.aresult.insert(1.0, '新增到数组成功')
             self.report_log('添加该用户到数组：', name)
 
-    def add_to_array(self, name, email, tel):
-        t = threading.Thread(target=self._add_to_array(name, email, tel))
-        t.start()
-
-    def _add_to_link(self, name, email, tel):
+    def add_to_link(self, name, email, tel):
         if len(name) == 0:
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '请输入姓名添加')
@@ -293,11 +303,7 @@ class App:
             self.aresult.insert(1.0, '新增到链表成功')
             self.report_log('添加该用户到链表：', name)
 
-    def add_to_link(self, name, email, tel):
-        t = threading.Thread(target=self._add_to_link(name, email, tel))
-        t.start()
-
-    def _add_to_tree(self, name, email, tel):
+    def add_to_tree(self, name, email, tel):
         if len(name) == 0:
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '请输入姓名添加')
@@ -310,10 +316,6 @@ class App:
             self.aresult.delete(1.0, 'end')
             self.aresult.insert(1.0, '新增到树成功')
             self.report_log('添加该用户到树：', name)
-
-    def add_to_tree(self, name, email, tel):
-        t = threading.Thread(target=self._add_to_tree(name, email, tel))
-        t.start()
 
 
 def main_app():
