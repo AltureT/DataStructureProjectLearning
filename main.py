@@ -89,7 +89,7 @@ class App:
 
     def create_widgets(self):
         self.windowName.title('通讯录')
-        self.windowName.geometry('730x430')
+        self.windowName.geometry('730x460')
 
         tabs = ttk.Notebook(self.windowName, width=370, height=360)
         searchtabframe = Frame(tabs)
@@ -107,6 +107,10 @@ class App:
         tabs.add(addtabframe, text='新增')
         tabs.add(createtabframe, text='数据生成')
         tabs.grid(row=0, column=0, rowspan=24, columnspan=2)
+
+        author = '项目地址:https://gitee.com/alture/DataStructureProjectLearning'
+        namelabel = Label(self.windowName, text=author)
+        namelabel.grid(row=3, column=0, columnspan=2)
 
     def create_search_frame(self, searchtabframe):
         namelabel = Label(searchtabframe, text='姓名:')
