@@ -13,10 +13,10 @@ def runtime(func):
         start = time()
         result = func(*args, **kwargs)
         end = time()
-
+        t = (end - start) * 1000
         lock.acquire()
         try:
-            global_val.set_runtime(format(end - start, '.8f'))
+            global_val.set_runtime(format(t, '.5f'))
         finally:
             lock.release()
 

@@ -56,10 +56,13 @@ class Graph:
             return
         graph = nx.DiGraph()
         graph, pos = self.create_graph(graph, node)
-        fig, ax = plt.subplots(figsize=(8, 10))  # 比例可以根据树的深度适当调节
-        nx.draw_networkx(graph, pos, ax=ax, node_size=300)
-        plt.show()
-        print('绘制完成')
+        # fig, ax = plt.subplots(figsize=(8, 10))  # 比例可以根据树的深度适当调节
+        global_val.set_graph(graph)
+        global_val.set_pos(pos)
+        # global_val.set_ax(ax)
+        # nx.draw_networkx(graph, pos, ax=ax, node_size=300)
+        # plt.show()
+        # print('绘制完成')
 
     def draw(self):  # 以某个节点为根画图
         t = threading.Thread(target=lambda: self._draw(global_val.get_user_tree()))
@@ -201,9 +204,18 @@ class App:
 
     def draw_tree(self):
         t = threading.Thread(target=Graph().draw())
+        t.daemon = True
         t.start()
         # graph = Graph(global_val.get_user_tree())
         # graph.draw()
+        # plt.show()
+        fig, ax = plt.subplots(figsize=(8, 10))  # 比例可以根据树的深度适当调节
+        graph = global_val.get_graph()
+        pos = global_val.get_pos()
+
+        nx.draw_networkx(graph, pos, ax=ax, node_size=300)
+        plt.show()
+        print('绘制完成')
 
     def initial_data(self):
         self.logresult.delete(1.0, 'end')
@@ -211,7 +223,7 @@ class App:
 
     def report_log(self, opera: str, name: str):
         runtime = global_val.get_runtime()
-        s = opera + name + '\n' + '时间开销:' + runtime + '\n'
+        s = opera + name + '\n' + '时间开销:' + runtime + 'ms'
 
         t = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         result = solution.log_add(global_val.get_log_queue(), s)
